@@ -1,5 +1,0 @@
-kiểm tra name và ip đã tồn tại hay chưa trước khi add
-cho phép chọn số hàng mỗi trang ở trang logs
-sửa xóa cho device ở trang dashboard
-đoạn test regex cho ip ở add device vẫn lỗi
-test thử xem insert được nhiều row vào bảng k hay chỉ 1
