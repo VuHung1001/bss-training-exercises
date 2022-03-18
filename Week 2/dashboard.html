@@ -8,6 +8,7 @@
           <th>IP</th>
           <th>Created Date</th>
           <th>Power Consumption (Kw/H)</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody id="dashboard-table-body">
@@ -17,12 +18,13 @@
           <td>${value.ip}</td>
           <td>${value.createdDate}</td>
           <td>${value.power}</td>
+          <td><button>Delete</button></td>
         </tr>  -->
       </tbody>
       <tfoot>
         <tr>
           <td>Total</td>
-          <td colspan="3"></td>
+          <td colspan="4"></td>
           <td id="dashboard-table-total"></td>
         </tr>
       </tfoot>
@@ -37,15 +39,15 @@
     <div class="add_device-container">
       <input type="text" id="name" name="name" placeholder="Name" required />
       <input type="text" id="ip" name="ip" placeholder="IP" required />
-      <button type="submit" onclick="addDevice()">ADD DEVICE</button>
+      <button type="button" onclick="addDevice()">ADD DEVICE</button>
     </div>
   </div>
 
   <script>
-    // this function was defined in dashboard.js
+    // this is declared in file dashboard.js
     loadTableDashboard();
 
-    // loadChart function was defined in doughnut-chart.js
+    // loadChart is declared in file doughnut-chart.js
     loadChart();
   </script>
 </div>

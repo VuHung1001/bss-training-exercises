@@ -25,7 +25,7 @@
 
     <div class="main-item">
       <a onclick="redirectTo('dashboard')">
-        <i class="fas fa-bars"></i>
+        <i class="fas fa-phone-laptop"></i>
         <p>Device Manager</p>
       </a>
     </div>
@@ -33,17 +33,17 @@
     <div class="item">
       <a onclick="redirectTo('dashboard')">
         <i class="far fa-phone-laptop"></i>
-        <p>Dashboard</p>
+        <p id="dashboard-p">Dashboard</p>
       </a>
     </div>
 
     <div class="item">
       <a onclick="redirectTo('logs')">
         <i class="far fa-history"></i>
-        <p>Logs</p>
+        <p id="logs-p">Logs</p>
       </a>
     </div>
-    
+
     <div class="item">
       <a>
         <i class="fas fa-cog"></i>
@@ -54,10 +54,23 @@
 
   <div class="content"></div>
   <script>
-    // this was defined in menu.js
-    redirectTo('dashboard');
+    // if page width <=415 px then show hamburger button
+    if (window.innerWidth <= 415) {
+      $("#hamburger-button").show();
+    }
 
-    // this was defined in menu.js
-    toggleSidebar()
+    // these are declared in file menu.js
+    redirectTo("dashboard");
+
+    isDisplay = true;
+    toggleSidebar(false);
+
+    // check when switching to a wider screen and then show the menu again
+    window.setInterval(()=>{
+      if(window.innerWidth > 415){
+        $(".sidebar").animate({ left: "0" });
+        isDisplay = true;
+      }
+    }, 500)
   </script>
 </div>

@@ -64,6 +64,10 @@
   align-items: center;
 }
 
+.menus .sidebar .item a .active{
+  color: #4d99f2;
+}
+
 .menus .sidebar a i{
   width: auto;
   height: auto;
@@ -121,7 +125,7 @@
   }
 
   .menus .sidebar .for-mobile a p{
-    font-size: 15px;
+    font-size: 14px;
     width: 100%;
   }
 

@@ -1,3 +1,4 @@
+// initial dashboard table data
 let data = [
   {
     device: "TV",
@@ -43,8 +44,10 @@ let data = [
   },
 ];
 
+// get devices data from local storage
 let stored = JSON.parse(localStorage.getItem("devices"));
 
+// if devices data from local storage are not available, initialize them
 if (!stored) {
   localStorage.setItem("devices", JSON.stringify(data));
   stored = JSON.parse(localStorage.getItem("devices"));

@@ -1,23 +1,26 @@
 let myChart = null;
+let powerData = [50, 100, 90, 40, 30, 60];
+let deviceData = [
+  "TV",
+  "Washing Machine",
+  "Refrigerator",
+  "Fan",
+  "Laptop",
+  "PC",
+];
+let ipData = []
 
+
+// load data to doughnut chart
 const loadChart = ()=>{
   if(myChart) myChart.destroy();
 
-  let powerData = [50, 100, 90, 40, 30, 60];
-  let deviceData = [
-    "TV",
-    "Washing Machine",
-    "Refrigerator",
-    "Fan",
-    "Laptop",
-    "PC",
-  ];
-
-  // stored variable was defined in data.js
+  // stored variable is declared in file data.js
   if (stored.length > 0) {
     stored.map((value, index) => {
       powerData[index] = value.power;
       deviceData[index] = value.device;
+      ipData[index] = value.ip;
     });
   }
 

@@ -69,3 +69,11 @@
   color: #4d99f2 !important;
 }
 
+@media only screen and (max-width: 415px){
+  .login-container{
+    width: 90vw;
+    top: 50%;
+    left: 50%;
+  }
+}
+

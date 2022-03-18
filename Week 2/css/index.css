@@ -1,6 +1,10 @@
 :root{
   --sidebar-width: 250px;
-  --chart-height: 430px;
+  --chart-height: 486px;
+}
+
+input:focus{
+  outline: 0.5px dotted #f28e19 !important;
 }
 
 button{
@@ -37,7 +41,7 @@ p, h1, h2, h3, h4, a{
 
 table, tr{
   border: 1px solid #f5f5f5;
-  border-radius: 5px;
+  border-radius: 10px;
   border-collapse: collapse;
   color: #747272;
 }
@@ -53,8 +57,16 @@ td, th{
   position: fixed;
   top: 0;
   left: 0;
+  display: none;
 }
 
 #hamburger-button i{
   padding: 10px;
+}
+
+@media only screen and (max-width: 415px){
+  #hamburger-button {
+    display: block;
+  }
+  
 }

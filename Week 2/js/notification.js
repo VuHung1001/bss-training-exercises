@@ -1,3 +1,4 @@
+// create notification (error, success, warning, information)
 function notification(title, message, type, duration) {
   const main = document.getElementById("notification");
   if (main) {
@@ -16,6 +17,7 @@ function notification(title, message, type, duration) {
       }
     };
 
+    // icons classes
     const icons = {
       success: "fas fa-check-circle",
       info: "fas fa-info-circle",
@@ -25,9 +27,11 @@ function notification(title, message, type, duration) {
     const icon = icons[type];
     const delay = (duration / 1000).toFixed(2);
 
+    // create animation for notification
     notification.classList.add("notification", `notification-${type}`);
     notification.style.animation = `slideInLeft ease .5s, fadeOut linear 1s ${delay}s forwards`;
 
+    // append html tag
     notification.innerHTML = `
                   <div class="notification_icon">
                       <i class="${icon}"></i>
