@@ -1,0 +1,6 @@
+3 main apis:
+  - login logout
+  - device get, post, put, delete
+  - logs get
+
+phan add, update, delete du lieu trong file nen sua mot phan cua file thay vi thay the toan bo file

@@ -15,6 +15,9 @@ let ipData = []
 const loadChart = ()=>{
   if(myChart) myChart.destroy();
 
+  powerData=[];
+  deviceData=[];
+  ipData=[];
   // stored variable is declared in file data.js
   if (stored.length > 0) {
     stored.map((value, index) => {
@@ -53,7 +56,7 @@ const loadChart = ()=>{
         },
         title: {
           display: true,
-          text: "Chart.js Doughnut Chart",
+          text: "Power Consumption",
         },
       },
     },

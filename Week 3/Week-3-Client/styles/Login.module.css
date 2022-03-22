@@ -1,0 +1,79 @@
+/* container */
+.loginContainer{
+  background-color: white;
+  min-height: 370px;
+  width: 40vw;
+  height: 50vh;
+  position: fixed;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 5px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginContainer *:not(.child) { background-color: white;}
+
+/* login form */
+.loginContainer form{
+  height: 100%;
+  width: 70%;
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  flex-direction: column;
+}
+
+/* label */
+.loginContainer h2, .loginContainer b{
+  font-stretch: condensed;
+  margin: 20px;
+  margin-bottom: 40px;
+}
+
+/* login input */
+.loginContainer input{
+  width: 100%;
+  padding: 20px;
+  border: none;
+  background-color: #f9f4f4 !important;
+  margin-top: 30px;
+}
+
+/* button and link container */
+.loginContainer .btnContainer{
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* login button */
+.loginContainer .btnContainer button{
+  width: 30%;
+  border: none;
+  background-color: #f28e19;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 15px;
+  box-shadow: rgba(0, 0, 0, 0.6) 0px 3px 5px;
+}
+
+/* register link */
+.loginContainer .btnContainer a{
+  margin-left: 20px;
+  color: #4d99f2 !important;
+}
+
+@media only screen and (max-width: 415px){
+  .loginContainer{
+    width: 90vw;
+    top: 50%;
+    left: 50%;
+  }
+}
+
