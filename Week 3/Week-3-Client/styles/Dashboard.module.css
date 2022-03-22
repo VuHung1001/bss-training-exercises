@@ -1,0 +1,210 @@
+/* dashboard-container */
+.content .dashboard-container  {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 50px;
+  margin-top: 50px;
+  background-color: #f5f5f5;
+  margin-left: var(--sidebar-width);
+  width: fit-content;
+}
+
+
+/* table container */
+.dashboard-container .data-table-container{
+  overflow: auto;
+  border-radius: 10px;
+  width: fit-content;
+  height: fit-content;
+  height: 60vh;
+  margin-bottom: 20px;
+}
+
+/* table */
+.dashboard-container .data-table{
+  border-radius: 10px;
+  table-layout: fixed;
+}
+
+/* table editing input */
+.dashboard-container .data-table .dashboard-table-input{
+  border: none;
+  font-size: 16px;
+  height: 100%;
+  padding: 6px 2px;
+  width: 150px;
+}
+
+.dashboard-container .data-table, .dashboard-container .data-table tr{
+  border-bottom: 2px solid #f5f5f5;
+  border-collapse: collapse;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 3px;
+}
+
+.dashboard-container .data-table th{
+  text-align: right;
+  font-weight: normal;
+  padding: 20px 20px 20px 30px;
+  border-bottom: 2px solid #c3c5c8;
+}
+
+.dashboard-container .data-table th:first-child{
+  text-align: left;
+  padding: 20px 30px 20px 20px;
+}
+
+.dashboard-container .data-table tr td{
+  text-align: right;
+  padding: 20px 20px 20px 30px;
+}
+
+.dashboard-container .data-table td:first-child {
+  text-align: left;
+  padding: 20px 30px 20px 20px;
+}
+
+/* total power row of table */
+.dashboard-container .data-table tfoot tr:last-child td{
+  background-color: #fafbfb;
+  font-weight: bold;
+}
+
+
+/* delete button */
+/* edit button */
+.dashboard-container .data-table .dashboard-delete_row-btn
+, .dashboard-container .data-table .dashboard-edit_row-btn{
+  border: none;
+  width: 35px;
+  height: 35px;
+}
+
+.dashboard-container .data-table .dashboard-delete_row-btn:hover,
+.dashboard-container .data-table .dashboard-edit_row-btn:hover{
+  transform: scale(1.2);
+}
+
+.dashboard-container .data-table .dashboard-delete_row-btn:checked
+, .dashboard-container .data-table .dashboard-edit_row-btn:checked{
+  border: none;
+}
+
+.dashboard-container .data-table .dashboard-edit_row-btn i{
+  padding: 5px;
+  font-size: 23px;
+  width: fit-content;
+  height: fit-content;
+  color: #f28e19;
+}
+
+.dashboard-container .data-table .dashboard-delete_row-btn i{
+  padding: 5px;
+  font-size: 23px;
+  width: fit-content;
+  height: fit-content;
+  color: #ff623d;
+}
+
+
+/* bottom of dashboard-container */
+.dashboard-container .bottom{
+  width: 90%;
+  overflow: visible !important;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5; 
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+
+/* chart */
+.dashboard-container .chart-container{
+  min-width: 200px;
+  min-height: 200px;
+  width: 45%;
+  height: var(--chart-height);
+  width: fit-content;
+  background-color: white;
+  flex: 1;
+  margin: 20px;
+  /* display: table-cell; */
+}
+
+
+/* add device */
+.dashboard-container .add_device-container {
+  min-width: 200px;
+  min-height: 200px;
+  width: 45%;
+  height: var(--chart-height);
+  background-color: white;
+  flex: 1;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; 
+  align-items: center;
+  /* display: table-cell; */
+}
+
+/* add device input */
+.dashboard-container .add_device-container input{
+  width: 80%;
+  padding: 20px;
+  border: none;
+  background-color: #f9f4f4 !important;
+  box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 6px;
+  margin-top: 70px;
+}
+
+/* add device button */
+.dashboard-container .add_device-container button{
+  width: 30%;
+  border: none;
+  background-color: #f28e19;
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 15px;
+  margin: 50px;
+}
+
+
+/* responsive */
+@media only screen and (max-width: 415px){
+  .dashboard-container .data-table-container{
+    display: none;
+  }
+
+  .content .dashboard-container{
+    margin: 0px;
+    padding: 0px;
+    z-index: 1;
+    width: 100vw;
+  }
+
+  .dashboard-container .bottom{
+    flex-direction: column;
+    margin-left: 0px;
+    margin-bottom: 20px;
+  }
+
+  .dashboard-container .chart-container{
+    width: 100%;
+    margin: 60px 0px 30px 0px;
+  }
+
+  .dashboard-container .add_device-container{
+    width: 100%;
+    margin: 5px 0px;
+  }
+
+  .dashboard-container .add_device-container button{
+    width: 50%;
+  }
+}
+
