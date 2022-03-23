@@ -1,9 +1,14 @@
+import { useState } from "react";
 
-const Dashboard = () => {
+
+const DashboardCom = ({props}) => {
+  const [devices, setDevices] = useState(props.devices)
+  
+
   return (
-    <div class="dashboard-container">
-      <div class="data-table-container">
-        <table class="data-table">
+    <div className="dashboard-container">
+      <div className="data-table-container">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Devices</th>
@@ -18,7 +23,7 @@ const Dashboard = () => {
           <tfoot>
             <tr>
               <td>Total</td>
-              <td colspan="3"></td>
+              <td colSpan="3"></td>
               <td id="dashboard-table-total"></td>
               <td></td>
             </tr>
@@ -26,12 +31,12 @@ const Dashboard = () => {
         </table>
       </div>
 
-      <div class="bottom">
-        <div class="chart-container">
+      <div className="bottom">
+        <div className="chart-container">
           <canvas id="myChart"></canvas>
         </div>
 
-        <div class="add_device-container">
+        <div className="add_device-container">
           <input
             type="text"
             id="name"
@@ -40,7 +45,7 @@ const Dashboard = () => {
             required
           />
           <input type="text" id="ip" name="ip" placeholder="IP" required />
-          <button type="button" onclick="addDevice()">
+          <button type="button" onClick="addDevice()">
             ADD DEVICE
           </button>
         </div>
@@ -49,4 +54,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardCom;
