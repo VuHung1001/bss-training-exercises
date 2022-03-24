@@ -9,7 +9,6 @@ const Menus = ({children}) => {
 
     if(username){
       let res = await logout(username)
-      console.log(res);
 
       if(res.message === 'Logout success'){
         sessionStorage.setItem('isLoggedIn', res.isLoggedIn)
@@ -18,6 +17,10 @@ const Menus = ({children}) => {
         router.push('/login')
       }
     }
+  }
+
+  const redirectTo = (path) =>{
+    router.push('/'+path)
   }
 
   return (
@@ -47,21 +50,21 @@ const Menus = ({children}) => {
         </div>
 
         <div className="main-item">
-          <a onClick="redirectTo('dashboard')">
+          <a onClick={() => redirectTo('dashboard')}>
             <i className="fas fa-phone-laptop"></i>
             <p>Device Manager</p>
           </a>
         </div>
 
         <div className="item">
-          <a onClick="redirectTo('dashboard')">
+          <a onClick={() => redirectTo('dashboard')}>
             <i className="far fa-phone-laptop"></i>
             <p id="dashboard-p">Dashboard</p>
           </a>
         </div>
 
         <div className="item">
-          <a onClick="redirectTo('logs')">
+          <a onClick={() => redirectTo('logs')}>
             <i className="far fa-history"></i>
             <p id="logs-p">Logs</p>
           </a>

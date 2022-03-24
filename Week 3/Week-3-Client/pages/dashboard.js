@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import {getDevices} from '../call_api/dashboardAPI'
 import { MainContext } from '../pages/_app';
 
-const dashboard = ({devices}) => {
+const Dashboard = ({devices}) => {
   const { isLoggedIn } = useContext(MainContext);
 
   return (
@@ -25,4 +25,4 @@ export const getStaticProps = async () => {
 	}
 }
 
-export default dashboard
+export default Dashboard

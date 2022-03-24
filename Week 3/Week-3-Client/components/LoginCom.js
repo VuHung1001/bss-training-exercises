@@ -13,7 +13,6 @@ const LoginCom = () => {
     e.preventDefault();
     const username = $('#username').val()
     const password = $('#password').val()
-console.log(username, password);
 
     if(username != '' && password != ''){
       setUsername(username);
@@ -30,18 +29,21 @@ console.log(username, password);
     }
   };
 
-  useEffect(async ()=>{
-    if(username != '' && password != ''){
-      const res = await login(username, password)
-      if(res.message === 'Login success'){
-        sessionStorage.setItem('isLoggedIn', res.isAuthed)
-        sessionStorage.setItem('username', res.username)
+  useEffect(()=>{
+    const checkLogin = async ()=>{
+      if(username != '' && password != ''){
+        const res = await login(username, password)
+        if(res.message === 'Login success'){
+          sessionStorage.setItem('isLoggedIn', res.isAuthed)
+          sessionStorage.setItem('username', res.username)
 
-        console.log(sessionStorage.getItem('isLoggedIn'), sessionStorage.getItem('username'));
-        router.push('/dashboard')
+          router.push('/dashboard')
+        }
       }
     }
-  }, [username, password])
+
+    checkLogin()
+  }, [username, password, router])
 
   return (
     <div className="login-container">

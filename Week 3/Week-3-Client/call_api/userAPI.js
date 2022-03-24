@@ -1,4 +1,3 @@
-import axios from 'axios'
 import {publicRequest} from '../config/axios.config'
 
 export const login = async (username, password) => {

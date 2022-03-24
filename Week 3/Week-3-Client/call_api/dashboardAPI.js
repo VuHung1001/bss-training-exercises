@@ -1,4 +1,3 @@
-import axios from 'axios'
 import {userRequest} from '../config/axios.config'
 
 
@@ -13,10 +12,11 @@ export const getDevices = async () => {
 	}
 }
 
-export const logout = async (username) =>{
+export const addDevice = async (device) =>{
   try {
-		const response = await userRequest().get(
-			`/auth/logout/${username}`
+		const response = await userRequest().post(
+			`/devices`,
+			device
 		)
 		return response.data
 	} catch (error) {
