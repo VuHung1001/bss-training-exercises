@@ -11,7 +11,7 @@ const {logRouter} = require('./routes/logs.js'); // logs
 // require dotenv to use .env file
 require('dotenv').config()
 //port
-const port = process.env.PORT || 3000 ;
+const port = process.env.PORT || 3001 ;
 
 const app = new koa();
 

@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import {addDevice} from '../call_api/dashboardAPI'
+import Notification from "./Notification";
 
 const DashboardCom = ({props}) => {
   const [devices, setDevices] = useState(props.devices)
@@ -7,7 +8,10 @@ const DashboardCom = ({props}) => {
   const [ipData, setIpData] = useState([])
   const [myChart , setMyChart] = useState(null)
   const [isChartChanged, setIsChartChanged] = useState(true)
-
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState('info');
+  const [duration, setDuration] = useState(5000);  
 
   const loadDashboardTable = useCallback(()=>{
     const tBody = $("#dashboard-table-body");
@@ -45,7 +49,7 @@ const DashboardCom = ({props}) => {
         `);
   
         // add onclick event handler to delete button
-        $(`.button-delete-${index}`).click(()=>removeDevice(value.device))
+        // $(`.button-delete-${index}`).click(()=>removeDevice(value.device))
   
         // convert delete button to edit button when focus input
         $(`.input-${index}`).focus(()=>{
@@ -132,6 +136,7 @@ const DashboardCom = ({props}) => {
 
   
   const addDeviceHandle = async()=>{
+
     const name = $('#name').val();
     const ip = $('#ip').val();
     const ipRegex = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)(\.(?!$)|$)){4}$/g; // regexp to test ip address
@@ -140,67 +145,102 @@ const DashboardCom = ({props}) => {
     ipRegex.test(ip) // must run this line for the condition in IF to run properly
     // if name is empty
     if(name.trim() === ''){
-      // notification(
-      //   "Add failed!",
-      //   "Device name is not inputted yet!",
-      //   "error",
-      //   10000,
-      // );
+
+      setTitle( "Add failed!")
+      setMessage("Device name is not inputted yet!")
+      setType("error")
+      setDuration(5000)
+
       isError = true;
       $('#name').focus();
+
+      const timeout = setTimeout(() =>{
+        setTitle( "")
+        setMessage("")
+        setType("info")
+        setDuration(5000)
+
+        window.clearTimeout(timeout)
+      }, 5000)
       return;
     }
   
     ipRegex.test(ip) // must run this line for the condition in IF to run properly
     // if ip is not correct format
     if(ipRegex.test(ip) === false){
-      // notification(
-      //   "Add failed!",
-      //   "Device IP is not correct! Example IP addresses:<br/>"
-      //   +"127.0.0.1<br/>"
-      //   +"192.168.1.1<br/>"
-      //   +"192.168.1.255<br/>"
-      //   +"255.255.255.255<br/>"
-      //   +"0.0.0.0",
-      //   "error",
-      //   10000,
-      // );
+
+      setTitle( "Add failed!")
+      setMessage("Device IP is not correct! Example IP addresses:<br/>"
+        +"127.0.0.1<br/>"
+        +"192.168.1.1<br/>"
+        +"192.168.1.255<br/>"
+        +"255.255.255.255<br/>"
+        +"0.0.0.0",)
+      setType("error")
+      setDuration(5000)
+
       isError = true;
       $('#ip').focus();
+
+      const timeout = setTimeout(() =>{
+        setTitle( "")
+        setMessage("")
+        setType("info")
+        setDuration(5000)
+
+        window.clearTimeout(timeout)
+      }, 5000)
       return;
     }
   
     if(isError) {
       $('#name').focus();
+      return;
     }; // error is existed, return this function
   
     ipRegex.test(ip) // must run this line for the condition in IF to run properly
     if(name.trim() !== '' && ipRegex.test(ip)){
   
-      // ipData and deviceData is declared in file doughnut-chart.js
   
       // name and ip must be unique
       if(deviceData.includes(name)){
-        // notification(
-        //   "Add failed!",
-        //   "Device name is existed!",
-        //   "error",
-        //   10000,
-        // );
+
+        setTitle( "Add failed!")
+        setMessage("Device name is existed!")
+        setType("error")
+        setDuration(5000)
+
         isError = true;
         $('#name').focus();
+
+        const timeout = setTimeout(() =>{
+          setTitle( "")
+          setMessage("")
+          setType("info")
+          setDuration(5000)
+  
+          window.clearTimeout(timeout)
+        }, 5000)
         return;
       }
       
       if(ipData.includes(ip)){
-        // notification(
-        //   "Add failed!",
-        //   "Device ip is existed!",
-        //   "error",
-        //   10000,
-        // );
+        setTitle( "Add failed!")
+        setMessage("Device ip is existed!")
+        setType("error")
+        setDuration(5000)
+
         isError = true;
         $('#ip').focus();
+
+        const timeout = setTimeout(() =>{
+          setTitle( "")
+          setMessage("")
+          setType("info")
+          setDuration(5000)
+  
+          window.clearTimeout(timeout)
+        }, 5000)
         return;
       }
   
@@ -227,30 +267,25 @@ const DashboardCom = ({props}) => {
           power: Math.floor((Math.floor(Math.random() * 100) + 10) / 10) * 10, // power is random number can divisible by 10        
       })
 
-
-      setDevices(res.devices)
-      setIsChartChanged(true)
-
       // push device object to devices array
-      // setDevices((prev)=>{
-      //   prev.push({
-      //     device: name,
-      //     macAddress: macAddress,
-      //     ip,
-      //     createdDate: yourDate.toISOString().split('T')[0],
-      //     power: Math.floor((Math.floor(Math.random() * 100) + 10) / 10) * 10, // power is random number can divisible by 10
-      //   })
+      if(!res?.error){
+        setDevices(res.devices)
+        setIsChartChanged(true)
 
-      //   return prev
-      // })
+        setTitle( "Add device Success!")
+        setMessage("Device table and chart are reloaded")
+        setType("success")
+        setDuration(5000)      
+        
+        const timeout = setTimeout(() =>{
+          setTitle( "")
+          setMessage("")
+          setType("info")
+          setDuration(5000)
   
-      // add device to local storage
-      // localStorage.setItem("devices", JSON.stringify(devices));
-      // data = JSON.parse(localStorage.getItem("devices"));
-  
-      // reload table and chart
-      // loadTableDashboard()
-      // loadChart()
+          window.clearTimeout(timeout)
+        }, 5000)
+      }
   
       $('#name').val('');
       $('#ip').val('');
@@ -259,16 +294,20 @@ const DashboardCom = ({props}) => {
 
 
   useEffect(()=>{
-    // if(isChartChanged){
-    //   setMyChart((prev) => prev.destroy())
-    // }
     loadChart();
     loadDashboardTable();
-
   }, [loadDashboardTable, loadChart])
 
   return (
     <div className="dashboard-container">
+    {title !== '' && message !== '' && type !== 'info' &&(
+      <Notification
+        title={title}
+        message={message}
+        type={type}
+        duration={duration}            
+      />
+    )}    
       <div className="data-table-container">
         <table className="data-table">
           <thead>

@@ -9,6 +9,7 @@ export const getDevices = async () => {
 		return response.data
 	} catch (error) {
 		console.dir(error)
+		return {error: true}
 	}
 }
 
@@ -21,5 +22,6 @@ export const addDevice = async (device) =>{
 		return response.data
 	} catch (error) {
 		console.dir(error)
+		return {error: true}
 	}
 }

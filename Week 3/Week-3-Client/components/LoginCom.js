@@ -1,12 +1,9 @@
-import LoginStyles from '../styles/Login.module.css'
 import {login} from '../call_api/userAPI'
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router'
 
 const LoginCom = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const router = useRouter();
 
   // check username and password for login
   const loginHandle = (e)=>{
@@ -19,13 +16,14 @@ const LoginCom = () => {
       setPassword(password);
     } 
     // if empty, show warning message
-    else {
-      // notification(
-      //   "Login failed!",
-      //   "Your username and password are not correct yet!",
-      //   "warning",
-      //   10000,
-      // );    
+    else {   
+
+      sessionStorage.setItem('title', "Login failed!")
+      sessionStorage.setItem('message', "Your username and/or password are not inputted!")
+      sessionStorage.setItem('type', "warning")
+      sessionStorage.setItem('duration', 10000)
+
+      location.reload()
     }
   };
 
@@ -33,17 +31,30 @@ const LoginCom = () => {
     const checkLogin = async ()=>{
       if(username != '' && password != ''){
         const res = await login(username, password)
-        if(res.message === 'Login success'){
+
+        if(res?.message === 'Login success'){
           sessionStorage.setItem('isLoggedIn', res.isAuthed)
           sessionStorage.setItem('username', res.username)
 
-          router.push('/dashboard')
+          sessionStorage.setItem('title', "Hello mate")
+          sessionStorage.setItem('message', "Welcome!")
+          sessionStorage.setItem('type', "success")
+          sessionStorage.setItem('duration', 5000)
+
+          location.reload()
+        } else {
+          sessionStorage.setItem('title', "Login failed!")
+          sessionStorage.setItem('message', "Your username and password are not correct yet!")
+          sessionStorage.setItem('type', "error")
+          sessionStorage.setItem('duration', 10000)
+
+          location.reload()
         }
       }
     }
 
     checkLogin()
-  }, [username, password, router])
+  }, [username, password])
 
   return (
     <div className="login-container">

@@ -9,6 +9,7 @@ export const login = async (username, password) => {
 		return response.data
 	} catch (error) {
 		console.dir(error)
+		return {error: true}
 	}
 }
 
@@ -20,5 +21,6 @@ export const logout = async (username) =>{
 		return response.data
 	} catch (error) {
 		console.dir(error)
+		return {error: true}
 	}
 }

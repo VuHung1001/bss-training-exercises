@@ -10,6 +10,7 @@ export const getAllLogs = async () => {
 		return response.data
 	} catch (error) { 
 		console.dir(error)
+		return {error: true}
 	}
 }
 
@@ -22,6 +23,7 @@ export const getLogsByPageQuery = async (page=1, limit=5) => {
 		return response.data
 	} catch (error) {
 		console.dir(error)
+		return {error: true}
 	}
 }
 
@@ -34,6 +36,7 @@ export const getLogsByPagePath = async (page=1, limit=5) => {
 		return response.data
 	} catch (error) {
 		console.dir(error)
+		return {error: true}
 	}
 }
 

@@ -1,25 +1,28 @@
 import {useState, useCallback, useEffect} from 'react'
+import Notification from './Notification';
 
 const LogsCom = ({props}) => {
   const [logs, setLogs] = useState(props.logs)
   const [page, setPage] = useState(1)
   const [rowPerPage, setRowPerPage] = useState(5)
-  const [totalPage, setTotalPage] = useState(Math.ceil(logs.length / rowPerPage));
+  const [totalPage, setTotalPage] = useState(0);
   const [totalPageArr, setTotalPageArr] = useState(Array.apply(null, Array(totalPage)).map(function (v, i) { return i+1; }))
   const [searchRsltLen, setSearchRsltLen] = useState(0);
   const [searchRslt, setSearchRslt] = useState([]);  
   const [isSearching, setIsSearching] = useState(false);
+  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState('info');
+  const [duration, setDuration] = useState(5000); 
 
 
   const loadTableLogs = useCallback(() => {
     // loadPagination(isSearching)
-  //debugger;
     const tBody = $("#logs-table-body");
     const totalHTML = $("#logs-table-total");
     let total = 0;
   
     let data = isSearching ? searchRslt : logs;
-    // let data = logs;
 
     if (data.length > 0) {
       tBody.empty();
@@ -51,19 +54,14 @@ const LogsCom = ({props}) => {
 
 
   const setRowsPerPage = () => {
-    //debugger;
     const rowPerPageInput = $('#setRowsPerPage')
     const maxRow = isSearching ? searchRsltLen : logs.length;
-    // const maxRow = logs.length;
   
     // if inputted row number > 0 and <= maximum row
     // reload table and pagination by new row-per-page value
     if(rowPerPageInput.val() > 0 && rowPerPageInput.val() <= maxRow ){
       setRowPerPage(rowPerPageInput.val())
   
-      // totalPage = isSearching 
-      //   ? Math.ceil(searchRslt.length / rowPerPageInput.val()) 
-      //   : Math.ceil(logsData.length / rowPerPageInput.val());
 
       setTotalPage(
         isSearching 
@@ -71,8 +69,6 @@ const LogsCom = ({props}) => {
         : Math.ceil(logsData.length / rowPerPageInput.val())
       )
   
-      // loadTableLogs(1, isSearching)
-      // loadPagination(isSearching);
   
       changePageHandle(1)
 
@@ -80,13 +76,20 @@ const LogsCom = ({props}) => {
       rowPerPageInput.val('')
       
     } else {
-      // notification(
-      //   "Rows in data table must be between 1 and "+maxRow,
-      //   "Please insert again!",
-      //   "info",
-      //   10000,
-      // );
-  
+      setTitle( "Set rows per page failed!")
+      setMessage("Rows in data table must be between 1 and "+maxRow)
+      setType("info")
+      setDuration(5000)
+
+      const timeout = setTimeout(() =>{
+        setTitle( "")
+        setMessage("")
+        setType("info")
+        setDuration(5000)
+
+        window.clearTimeout(timeout)
+      }, 5000)
+
       rowPerPageInput.focus();
     }
     return;    
@@ -94,21 +97,29 @@ const LogsCom = ({props}) => {
 
 
   const search = () => {
-    //debugger;
     const searchInput = $("#search");
     const searchTxt = $.trim(searchInput.val()).replace(/ +/g, " ").toLowerCase();
   
     // if user don't insert anything in search input, reload table with logsData 
     if(searchTxt === ""){
-      // notification(
-      //   "Empty inputted value",
-      //   "Please insert device name into search box!<br>"
-      //   +"Logs data table is reloaded",
-      //   "warning",
-      //   10000,
-      // );
+
+      setTitle( "Empty inputted value!")
+      setMessage("Please insert somethings into search box!<br>"
+        +"Logs data table is reloaded",)
+      setType("warning")
+      setDuration(5000)
+
+      const timeout = setTimeout(() =>{
+        setTitle( "")
+        setMessage("")
+        setType("info")
+        setDuration(5000)
+
+        window.clearTimeout(timeout)
+      }, 5000)      
   
       setRowPerPage(5);
+      setPage(1);
       setTotalPage(Math.ceil(logs.length / 5));
       setIsSearching(false)
 
@@ -127,32 +138,33 @@ const LogsCom = ({props}) => {
       setSearchRslt([...searchResult]);
   
       setRowPerPage(5);
+      setPage(1);
       setTotalPage(Math.ceil(searchResult.length / 5));
       setIsSearching(true)
   
-      // loadTableLogs(1, true, searchResult);
-      // loadPagination(true);
-  
       $('#setRowsPerPage').attr('placeholder', 5);
-      // $('#setRowsBtn').attr('onclick', 'setRowsPerPage(true)');
   
     } 
     // if search result is empty, show notification for user and return previous table and pagination results
     else {
-      // notification(
-      //   "None result for your searching",
-      //   "Please insert another device name!",
-      //   "info",
-      //   10000,
-      // );
+      setTitle( "None result for your searching")
+      setMessage("Please insert another device name!")
+      setType("info")
+      setDuration(5000)
+
+      const timeout = setTimeout(() =>{
+        setTitle( "")
+        setMessage("")
+        setType("info")
+        setDuration(5000)
+
+        window.clearTimeout(timeout)
+      }, 5000)      
   
       searchInput.val('')
       setIsSearching(true)
   
       setTotalPage(Math.ceil(searchRslt.length / rowPerPage));
-  
-      // loadTableLogs(1, true, searchRslt);
-      // loadPagination(true);   
       
     }
     return;
@@ -161,15 +173,24 @@ const LogsCom = ({props}) => {
 
   useEffect(() => {
     setLogs(props.logs)
+
     !isSearching && setTotalPage(Math.ceil(logs.length / rowPerPage))
+
     loadTableLogs()
+
     setTotalPageArr(Array.apply(null, Array(totalPage)).map(function (v, i) { return i+1; }))
-    // loadPagination()
   }, [loadTableLogs, logs, rowPerPage, totalPage, props, isSearching])
   
-
   return (
     <div className="logs-container">
+      {title !== '' && message !== '' &&(
+        <Notification
+          title={title}
+          message={message}
+          type={type}
+          duration={duration}            
+        />
+      )}        
       <div className="top">
         <div className="left">
           <h2>Action Logs</h2>

@@ -1,8 +1,11 @@
 import {logout} from '../call_api/userAPI'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 const Menus = ({children}) => {
   const router = useRouter();
+  const [isDisplay, setIsDisplay] = useState(false)
 
   const logoutHandle = async () =>{
     let username = sessionStorage.getItem('username')
@@ -10,21 +13,98 @@ const Menus = ({children}) => {
     if(username){
       let res = await logout(username)
 
-      if(res.message === 'Logout success'){
+      if(res?.message === 'Logout success'){
         sessionStorage.setItem('isLoggedIn', res.isLoggedIn)
         sessionStorage.removeItem('username')
 
-        router.push('/login')
+        sessionStorage.setItem('title', "Logout!")
+        sessionStorage.setItem('message', "Redirect to login page!")
+        sessionStorage.setItem('type', "info")
+        sessionStorage.setItem('duration', 5000)
+
+        window.location.replace('/login')
       }
     }
   }
 
   const redirectTo = (path) =>{
-    router.push('/'+path)
+    if(window.location.href.includes('dashboard')){
+      const sidebar = document.querySelector('.sidebar')
+      
+      sidebar.style.transform = 'translateX(-100%)';
+      sidebar.style.transition = 'all linear 0.5s';
+      
+      setIsDisplay(false)
+      const timeout = setTimeout(() =>{
+        router.push('/'+path)
+      }, 500)
+    }
+    else router.push('/'+path)
   }
+
+  const toggleSidebar = (clickBtn = true) => {
+    if (window.outerWidth <= 415) {
+
+      const sidebar = document.querySelector('.sidebar')
+      
+      if (isDisplay && !clickBtn) {
+
+        sidebar.style.transform = 'translateX(-100%)';
+        sidebar.style.transition = 'all linear 0.5s';
+  
+        setIsDisplay(false)
+        return;
+      }
+  
+      if(!isDisplay && clickBtn) {
+        
+        sidebar.style.transform = 'translateX(0%)';
+        sidebar.style.transition = 'all linear 0.5s';
+
+        setIsDisplay(true)
+        return;
+      }
+    }
+  };
+
+  useEffect(() => {
+    // if page width <=415 px then show hamburger button
+    const sidebar = document.querySelector('.sidebar')
+    const hamburgerBtn = document.querySelector("#hamburger-button")
+
+    if (window.outerWidth <= 415) {
+
+      sidebar.style.transform = 'translateX(-100%)';
+      sidebar.style.transition = 'all linear 0.5s';
+
+      hamburgerBtn.style.display = 'block'
+
+      setIsDisplay(false)
+    }
+
+    // check when switching to a wider screen and then show the menu again
+    window.setInterval(()=>{
+      if(window.outerWidth > 415){
+        sidebar.style.transform = 'translateX(0%)';
+        sidebar.style.transition = 'all linear 0.5s';
+
+        setIsDisplay(true)
+      }
+    }, 500)
+  }, [])
+  
 
   return (
     <div className="menus">
+      <div id="hamburger-button" 
+        onClick={() =>{
+          setIsDisplay(false)
+          toggleSidebar(true)}
+        }
+      >
+        <i className="fas fa-bars"></i>
+      </div>    
+
       <div className="topbar">
         <a onClick={logoutHandle} title="Logout">
           <i className="fas fa-sign-out"></i>
@@ -78,7 +158,10 @@ const Menus = ({children}) => {
         </div>
       </div>
 
-      <div className="content">{children}</div>
+      <div className="content"  onClick={() =>{
+        setIsDisplay(true)
+        toggleSidebar(false)}
+      }>{children}</div>
     </div>
   );
 };
