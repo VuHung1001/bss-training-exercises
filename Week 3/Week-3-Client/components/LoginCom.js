@@ -1,7 +1,12 @@
 import {login} from '../call_api/userAPI'
 import { useEffect, useState } from 'react';
+// import Script from 'next/script'
+// import useScript from '../hooks/useScript';
 
 const LoginCom = () => {
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js')
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -58,6 +63,12 @@ const LoginCom = () => {
 
   return (
     <div className="login-container">
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        strategy='beforeInteractive'
+      ></Script>      */}
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+        strategy='beforeInteractive'
+      ></Script>       */} 
       <form action="">
         <h2>
           <b>SOIOT SYSTEM</b>

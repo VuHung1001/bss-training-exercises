@@ -1,8 +1,13 @@
 import { useState, useCallback, useEffect } from "react";
 import {addDevice} from '../call_api/dashboardAPI'
 import Notification from "./Notification";
+// import Script from 'next/script'
+// import useScript from '../hooks/useScript';
 
 const DashboardCom = ({props}) => {
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js')
+
   const [devices, setDevices] = useState(props.devices)
   const [deviceData, setDeviceData] = useState([])
   const [ipData, setIpData] = useState([])
@@ -300,6 +305,12 @@ const DashboardCom = ({props}) => {
 
   return (
     <div className="dashboard-container">
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        strategy='beforeInteractive'
+      ></Script>      */}
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+        strategy='beforeInteractive'
+      ></Script>       */}
     {title !== '' && message !== '' && type !== 'info' &&(
       <Notification
         title={title}

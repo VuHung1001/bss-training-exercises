@@ -1,7 +1,12 @@
 import {useState, useCallback, useEffect} from 'react'
 import Notification from './Notification';
+// import Script from 'next/script'
+// import useScript from '../hooks/useScript';
 
 const LogsCom = ({props}) => {
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js')
+
   const [logs, setLogs] = useState(props.logs)
   const [page, setPage] = useState(1)
   const [rowPerPage, setRowPerPage] = useState(5)
@@ -183,6 +188,12 @@ const LogsCom = ({props}) => {
   
   return (
     <div className="logs-container">
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        strategy='beforeInteractive'
+      ></Script>      */}
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+        strategy='beforeInteractive'
+      ></Script>       */} 
       {title !== '' && message !== '' &&(
         <Notification
           title={title}

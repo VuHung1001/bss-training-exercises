@@ -5,8 +5,11 @@ import { useContext } from 'react';
 import { MainContext } from '../pages/_app';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+// import useScript from '../hooks/useScript';
 
 const Dashboard = ({devices}) => {
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js')
+  // useScript('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js')
 
   const router = useRouter();
   const { isLoggedIn } = useContext(MainContext); 
@@ -26,13 +29,11 @@ const Dashboard = ({devices}) => {
 
 export const getStaticProps = async () => {
 	const res = await getDevices()
-  const devices = null
-  if(res.devices)
-    devices = res.devices
 
+  if(res.devices)
 	return {
 		props: {
-			devices
+			devices: res.devices
 		}
 	}
 }

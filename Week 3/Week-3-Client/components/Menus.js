@@ -2,6 +2,7 @@ import {logout} from '../call_api/userAPI'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react';
 import { useState } from 'react';
+// import Script from 'next/script'
 
 const Menus = ({children}) => {
   const router = useRouter();
@@ -28,15 +29,20 @@ const Menus = ({children}) => {
   }
 
   const redirectTo = (path) =>{
-    if(window.location.href.includes('dashboard')){
+
+    if(window.location.href.includes('dashboard')
+      && window.outerWidth <= 415
+    ){
       const sidebar = document.querySelector('.sidebar')
       
       sidebar.style.transform = 'translateX(-100%)';
       sidebar.style.transition = 'all linear 0.5s';
       
       setIsDisplay(false)
+
       const timeout = setTimeout(() =>{
         router.push('/'+path)
+        window.clearTimeout(timeout)
       }, 500)
     }
     else router.push('/'+path)
@@ -68,6 +74,16 @@ const Menus = ({children}) => {
   };
 
   useEffect(() => {
+    // change color link in sidebar menu
+    window.location.href.includes("dashboard" )
+      && $('#dashboard-p').addClass("active")
+      && $('#logs-p').removeClass('active');
+
+    window.location.href.includes("logs" )
+      && $('#logs-p').addClass('active')
+      && $('#dashboard-p').removeClass("active");
+
+
     // if page width <=415 px then show hamburger button
     const sidebar = document.querySelector('.sidebar')
     const hamburgerBtn = document.querySelector("#hamburger-button")
@@ -96,6 +112,12 @@ const Menus = ({children}) => {
 
   return (
     <div className="menus">
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+        strategy='beforeInteractive'
+      ></Script>      */}
+      {/* <Script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"
+        strategy='beforeInteractive'
+      ></Script>       */} 
       <div id="hamburger-button" 
         onClick={() =>{
           setIsDisplay(false)
