@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import {addDevice} from '../call_api/dashboardAPI'
+import {addDevice, removeDevice} from '../call_api/dashboardAPI'
 import Notification from "./Notification";
 // import Script from 'next/script'
 // import useScript from '../hooks/useScript';
@@ -52,10 +52,13 @@ const DashboardCom = ({props}) => {
             </td>
           </tr>            
         `);
-  
+        
         // add onclick event handler to delete button
-        // $(`.button-delete-${index}`).click(()=>removeDevice(value.device))
-  
+        $(`.button-delete-${index}`).click(()=>removeDeviceHandle(index))
+        
+        // add onclick event handler to edit button
+        $(`.button-edit-${index}`).click(()=>editDeviceHandle(index))
+        
         // convert delete button to edit button when focus input
         $(`.input-${index}`).focus(()=>{
           $(`.button-delete-${index}`).attr('class', `dashboard-edit_row-btn button-edit-${index}`)
@@ -76,6 +79,35 @@ const DashboardCom = ({props}) => {
     }
   }, [devices])
 
+  const removeDeviceHandle = async (index) =>{
+    if(confirm('Are you really want remove this device? Can not return!')){
+
+      const res = await removeDevice(index)
+
+      if(!res?.error){
+        setDevices(res.devices)
+        setIsChartChanged(true)
+
+        setTitle( "Remove device Complete!")
+        setMessage("Device table and chart are reloaded")
+        setType("warning")
+        setDuration(5000)      
+        
+        const timeout = setTimeout(() =>{
+          setTitle( "")
+          setMessage("")
+          setType("info")
+          setDuration(5000)
+
+          window.clearTimeout(timeout)
+        }, 5000)
+      }    
+    } else return;
+  }
+
+  const editDeviceHandle = (index) =>{
+    
+  }
 
   const loadChart = useCallback(()=>{
     myChart && isChartChanged && setMyChart(prev=>{
@@ -264,6 +296,7 @@ const DashboardCom = ({props}) => {
       const offset = yourDate.getTimezoneOffset()
       yourDate = new Date(yourDate.getTime() - (offset*60*1000))
   
+      // add device object to devices array in db
       const res = await addDevice({
           device: name,
           macAddress: macAddress,
@@ -272,7 +305,6 @@ const DashboardCom = ({props}) => {
           power: Math.floor((Math.floor(Math.random() * 100) + 10) / 10) * 10, // power is random number can divisible by 10        
       })
 
-      // push device object to devices array
       if(!res?.error){
         setDevices(res.devices)
         setIsChartChanged(true)

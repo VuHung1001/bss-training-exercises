@@ -25,3 +25,15 @@ export const addDevice = async (device) =>{
 		return {error: true}
 	}
 }
+
+export const removeDevice = async (index) =>{
+  try {
+		const response = await userRequest().delete(
+			`/devices/${index}`,
+		)
+		return response.data
+	} catch (error) {
+		console.dir(error)
+		return {error: true}
+	}
+}

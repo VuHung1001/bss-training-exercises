@@ -474,7 +474,7 @@ td, th{
   border-radius: 10px;
   width: fit-content;
   height: fit-content;
-  height: 60vh;
+  height: 70vh;
   margin-bottom: 20px;
 }
 
@@ -482,7 +482,14 @@ td, th{
 .dashboard-container .data-table{
   border-radius: 10px;
   table-layout: fixed;
+  height: 60vh;
 }
+
+/* table tbody */
+/* .dashboard-container .data-table #dashboard-table-body{
+  height: 50vh;
+  overflow: scroll;
+} */
 
 /* table editing input */
 .dashboard-container .data-table .dashboard-table-input{
@@ -497,6 +504,12 @@ td, th{
   border-bottom: 2px solid #f5f5f5;
   border-collapse: collapse;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 3px;
+}
+
+.dashboard-container .data-table tr:hover td
+, .dashboard-container .data-table tr:hover .dashboard-edit_row-btn
+, .dashboard-container .data-table tr:hover .dashboard-delete_row-btn{
+  background-color: #86c7f3;
 }
 
 .dashboard-container .data-table th{
@@ -535,6 +548,7 @@ td, th{
   border: none;
   width: 35px;
   height: 35px;
+  background-color: transparent;
 }
 
 .dashboard-container .data-table .dashboard-delete_row-btn:hover,
@@ -548,19 +562,21 @@ td, th{
 }
 
 .dashboard-container .data-table .dashboard-edit_row-btn i{
-  padding: 5px;
+  padding: auto;
   font-size: 23px;
   width: fit-content;
   height: fit-content;
   color: #f28e19;
+  background-color: transparent;
 }
 
 .dashboard-container .data-table .dashboard-delete_row-btn i{
-  padding: 5px;
+  padding: auto;
   font-size: 23px;
   width: fit-content;
   height: fit-content;
   color: #ff623d;
+  background-color: transparent;
 }
 
 
@@ -756,6 +772,10 @@ td, th{
   border-bottom: 2px solid #f5f5f5;
   border-collapse: collapse;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 3px;
+}
+
+.logs-container .data-table tr:hover td{
+  background-color: #86c7f3;
 }
 
 .logs-container .data-table th{
