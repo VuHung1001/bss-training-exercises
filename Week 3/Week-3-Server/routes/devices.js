@@ -1,81 +1,31 @@
 const Router = require('koa-router');
-const fs = require('fs');
 const { checkLoggedIn } = require('./auth');
+const {addDevice, getAllDevices, updateDevice, deleteDevice} = require('../actions/devicesActions')
 
 const deviceRouter = Router({
   prefix: '/devices'
 });  //Prefixed all routes with /auth
 
-const devices = JSON.parse(fs.readFileSync('data/devices.json', 'utf8')).devices;
-
 //Routes will go here
 
 // add device
 deviceRouter.post('/', checkLoggedIn, (ctx, next)=>{
-  try{
-    devices.push(ctx.request.body)
-
-    let devicesJSON = `{"devices": ${JSON.stringify(devices)} }`
-
-    fs.writeFileSync('data/devices.json', devicesJSON, 'utf8')
-
-    ctx.body = {devices};
-  } catch(err){
-    ctx.response.status = 500;
-    ctx.body = {message: "Add device error", err}
-  }
-
-  next();
+  addDevice(ctx, next)
 });
 
 // get devices
 deviceRouter.get('/', checkLoggedIn, (ctx, next)=>{
-  try{
-    ctx.body = {devices};
-  } catch(err){
-    ctx.response.status = 500;
-    ctx.body = {message: "Internal server error", err}
-  }
-
-  next();
+  getAllDevices(ctx, next)
 });
 
 // update device
 deviceRouter.put('/', checkLoggedIn, (ctx, next)=>{
-  try{
-    let {index, ...rest} = ctx.request.body
-
-    devices[index*1] = {...rest}
-
-    let devicesJSON = `{"devices": ${JSON.stringify(devices)} }`
-
-    fs.writeFileSync('data/devices.json', devicesJSON, 'utf8')
-
-    ctx.body = {devices};
-  } catch(err){
-    ctx.response.status = 500;
-    ctx.body = {message: "Add device error", err}
-  }
-
-  next();
+  updateDevice(ctx, next)
 });
 
 // delete device
 deviceRouter.delete('/:index', checkLoggedIn, (ctx, next)=>{
-  try{
-    devices.splice(ctx.params.index*1, 1)
-
-    let devicesJSON = `{"devices": ${JSON.stringify(devices)} }`
-
-    fs.writeFileSync('data/devices.json', devicesJSON, 'utf8')
-
-    ctx.body = {devices};
-  } catch(err){
-    ctx.response.status = 500;
-    ctx.body = {message: "Internal server error", err}
-  }
-
-  next();
+  deleteDevice(ctx, next)
 });
 
 module.exports = {deviceRouter};

@@ -27,7 +27,7 @@ const Dashboard = ({devices}) => {
   )
 }
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
 	const res = await getDevices()
 
   if(res.devices)
@@ -36,6 +36,7 @@ export const getStaticProps = async () => {
 			devices: res.devices
 		}
 	}
+  // else return {props: {devices: {}}}
 }
 
 export default Dashboard

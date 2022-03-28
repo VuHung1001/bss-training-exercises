@@ -36,7 +36,8 @@ export const getStaticProps = async () => {
 		props: {
 			logs: res.logs
 		}
-	}
+	} 
+  // else return {props: {logs: {}}}
 }
 
 export default Logs
