@@ -71,7 +71,7 @@ const LogsCom = ({props}) => {
       setTotalPage(
         isSearching 
         ? Math.ceil(searchRslt.length / rowPerPageInput.val()) 
-        : Math.ceil(logsData.length / rowPerPageInput.val())
+        : Math.ceil(logs.length / rowPerPageInput.val())
       )
   
   
