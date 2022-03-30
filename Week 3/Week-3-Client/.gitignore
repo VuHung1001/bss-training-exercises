@@ -36,3 +36,6 @@ yarn-error.log*
 
 # private file
 todo.txt
+
+# npm package lock
+package-lock.json
