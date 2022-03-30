@@ -1,0 +1,87 @@
+/* * {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+} */
+
+
+.container{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 100px;
+}
+
+.container:first-child{
+  width: 80%;
+}
+
+.container .table-container{
+  width: 20%;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.table-title{
+  background-image: linear-gradient(to bottom right,#1d12c7, #b411b4);
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.table-title p{
+  background-color: transparent;
+}
+
+.table-price, .table-price tr, .table-price td {
+  border: 2px solid #e4e5e7;
+  border-collapse: collapse;
+  border-spacing: 0px;
+}
+
+.table-price{
+  border: 3px solid #f6f6f7;
+}
+
+.table-price thead tr{
+  color: white;
+  background-image: linear-gradient(to bottom right,#1d12c7, #b411b4);
+}
+
+.table-price td{
+  padding: 10px;
+  text-align: center;
+  background-color: transparent;
+}
+
+.table-price tbody tr td{
+  padding: 15px;
+}
+
+
+
+
+
+
+.Polaris-Layout{
+  margin-bottom: 50px;
+}
+
+.Polaris-Card{
+  padding: 20px;
+}
+
+.Polaris-Layout__Section{
+  border: 5px solid #e4e5e7;
+  border-radius: 10px;
+}
+
+.Polaris-DisplayText.Polaris-DisplayText--sizeMedium{
+  color: #8d8d8d;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
