@@ -1,20 +1,78 @@
 import { useCallback, useEffect, useState } from "react";
-import { ChoiceList, Form, FormLayout, Toast, Banner, ResourceList, Avatar, ResourceItem, TextStyle } from "@shopify/polaris";
+import {
+  ChoiceList,
+  Form,
+  FormLayout,
+  Toast,
+  ResourceList,
+  ResourceItem,
+  TextStyle,
+  Thumbnail,
+} from "@shopify/polaris";
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import store from "store-js";
 
-const ApplyProducts = ({ setIsAllProds }) => {
+const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
   const [applyProducts, setApplyProducts] = useState(["all"]);
   const [resrcPickerState, setResrcPickerState] = useState(false);
   const [resourceType, setResourceType] = useState("Product");
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [notify, setNotify] = useState(false);
+  const [showRsrcPckrForTags, setShowRsrcPckrForTags] = useState(false);
   const [isChoiceSelected, setIsChoiceSelected] = useState(false);
 
-  const handleProdsSelected = useCallback((selectPayload) => {
-    const idsFromResources = selectPayload.selection.map((item) => item.id);
-    setResrcPickerState(false);
-    store.set("ids", idsFromResources);
-  }, []);
-  
+  // console.log(applyProducts[0]);
+  // console.log(resrcPickerState);
+  // console.log(resourceType);
+  // console.log(selectedItems);
+  // console.log(notify);
+  // console.log(showRsrcPckrForTags);
+
+  const handleProdsSelected = useCallback(
+    (selectPayload) => {
+      // console.log(applyProducts[0]);
+      const selectItems = selectPayload.selection.map((item) => {
+        // console.log(item);
+        if (applyProducts[0] === "specific" || applyProducts[0] === "tags") {
+          return {
+            id: item.id,
+            title: item.title,
+            image: item.images[0].originalSrc,
+          };
+        }
+        if (applyProducts[0] === "collections") {
+          return {
+            id: item.id,
+            title: item.title,
+            image: item.image?.originalSrc,
+          };
+        }
+      });
+      setResrcPickerState(false);
+      // console.log(selectItems);
+
+      setSelectedItems(selectItems);
+      store.set("items", [...selectItems]);
+      setIsSelectionChanged(true);
+    },
+    [applyProducts, setIsSelectionChanged]
+  );
+
+  const removeItem = useCallback(
+    (id) => {
+      if (selectedItems.length > 0) {
+        let items = selectedItems.filter((item) => {
+          return item.id != id;
+        });
+        // console.log(items);
+
+        setSelectedItems(items);
+        store.remove("items");
+        store.set("items", items);
+      }
+    },
+    [selectedItems]
+  );
 
   useEffect(() => {
     if (isChoiceSelected) {
@@ -29,65 +87,38 @@ const ApplyProducts = ({ setIsAllProds }) => {
         setIsAllProds(false);
       }
       if (applyProducts[0] === "tags") {
-        const timeout = setTimeout(()=>{
+        setNotify(true);
+        if (showRsrcPckrForTags) {
           setResourceType("Product");
           setResrcPickerState(true);
           setIsAllProds(false);
-          window.clearTimeout(timeout)
-        }, 2000)
+          setNotify(false);
+          setShowRsrcPckrForTags(false);
+        }
       }
       if (applyProducts[0] === "all") {
         setResourceType("Product");
         setResrcPickerState(false);
         setIsAllProds(true);
       }
-      store.remove("ids");
+      store.remove("items");
       setIsChoiceSelected(false);
     }
-
-    const body = JSON.stringify({
-      query: `
-      {
-        shop {
-          products (first: 5){
-            edges{
-              node{
-                title
-                images (first:5) {
-                  edges {
-                    node {
-                      url
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      `,
-    });
-    
-    fetch('https://shopify-graphiql-app.shopifycloud.com/', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body,
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(JSON.stringify(json, null, 2)));    
   }, [
     applyProducts,
     setIsAllProds,
     resourceType,
-    isChoiceSelected,
     resrcPickerState,
+    showRsrcPckrForTags,
+    isChoiceSelected,
   ]);
+  // console.log(notify, showRsrcPckrForTags);
 
   return (
     <Form>
       <FormLayout>
-
         <ChoiceList
+          id="choice-list"
           title=""
           choices={[
             { label: "All products", value: "all" },
@@ -107,50 +138,79 @@ const ApplyProducts = ({ setIsAllProds }) => {
             resourceType={resourceType}
             selectMultiple={10}
             showVariants={false}
-            onCancel={() => setResrcPickerState(false)}
+            onCancel={() => {
+              setResrcPickerState(false);
+              setNotify(false);
+              setShowRsrcPckrForTags(false);
+            }}
             onSelection={(selectPayload) => {
               handleProdsSelected(selectPayload);
+              setNotify(false);
+              setShowRsrcPckrForTags(false);
             }}
           />
         )}
-        <ResourceList
-          resourceName={{ singular: "customer", plural: "customers" }}
-          items={[
-            {
-              id: 100,
-              url: "customers/341",
-              name: "Mae Jemison",
-              location: "Decatur, USA",
-            },
-            {
-              id: 200,
-              url: "customers/256",
-              name: "Ellen Ochoa",
-              location: "Los Angeles, USA",
-            },
-          ]}
-          renderItem={(item) => {
-            const { id, url, name, location } = item;
-            const media = <Avatar customer size="medium" name={name} />;
+        {resourceType !== "all" && selectedItems?.length > 0 && (
+          <ResourceList
+            resourceName={{ singular: "item", plural: "items" }}
+            items={selectedItems}
+            renderItem={(item) => {
+              const { id, title, image } = item;
+              const media = (
+                <Thumbnail
+                  source={
+                    image
+                      ? image
+                      : "https://congnghedoluong.com/wp-content/uploads/woocommerce-placeholder.png"
+                  }
+                  alt={title + " image"}
+                />
+              );
 
-            return (
-              <ResourceItem
-                id={id}
-                url={url}
-                media={media}
-                accessibilityLabel={`View details for ${name}`}
-              >
-                <h3>
-                  <TextStyle variation="strong">{name}</TextStyle>
-                </h3>
-                <div>{location}</div>
-              </ResourceItem>
-            );
-          }}
-        />
-        {applyProducts[0] == "tags" && (
-          <Toast content={"Insert products tag to select products with that tag"} duration={5000}/>
-        )}        
+              return (
+                <ResourceItem
+                  id={id}
+                  url={"#choice-list"}
+                  media={media}
+                  accessibilityLabel={`View details for ${title}`}
+                >
+                  <h3>
+                    <TextStyle variation="strong">{title}</TextStyle>
+                  </h3>
+                  <button
+                    className="close-btn"
+                    onClick={() => {
+                      window.event.preventDefault();
+                      window.event.stopPropagation();
+                      removeItem(id);
+                    }}
+                  >
+                    X
+                  </button>
+                </ResourceItem>
+              );
+            }}
+          />
+        )}
+        {applyProducts[0] == "tags" && notify && (
+          <Toast
+            content={
+              "Notice: Insert products tags into search input to find products have that tag"
+            }
+            duration={10000}
+            action={{
+              content: "Show Resource Picker",
+              onAction: () => {
+                setShowRsrcPckrForTags(true);
+                setIsChoiceSelected(true);
+              },
+            }}
+            onDismiss={() => {
+              setNotify(false);
+              setShowRsrcPckrForTags(false);
+            }}
+          />
+        )}
       </FormLayout>
     </Form>
   );
