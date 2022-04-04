@@ -12,10 +12,10 @@ import {
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import store from "store-js";
 
-const ApplyProducts = ({ 
-  setIsAllProds, 
-  setIsSave
-  // setIsSelectionChanged 
+const ApplyProducts = ({
+  setIsAllProds,
+  setIsSave,
+  // setIsSelectionChanged
 }) => {
   const [applyProducts, setApplyProducts] = useState(["all"]);
   const [resrcPickerState, setResrcPickerState] = useState(false);
@@ -26,19 +26,10 @@ const ApplyProducts = ({
   const [showRsrcPckrForTags, setShowRsrcPckrForTags] = useState(false);
   const [isChoiceSelected, setIsChoiceSelected] = useState(false);
 
-  // console.log(applyProducts[0]);
-  // console.log(resrcPickerState);
-  // console.log(resourceType);
-  // console.log(selectedProds);
-  // console.log(notify);
-  // console.log(showRsrcPckrForTags);
-
   const handleProdsSelected = useCallback(
     (selectPayload) => {
       // debugger
-      // console.log(applyProducts[0]);
       const selectItems = selectPayload.selection.map((item) => {
-        // console.log(item);
         if (applyProducts[0] === "specific" || applyProducts[0] === "tags") {
           return {
             id: item.id,
@@ -55,64 +46,65 @@ const ApplyProducts = ({
         }
       });
       setResrcPickerState(false);
-      // console.log(selectItems);
 
-      if (applyProducts[0] === "collections"){
-        setSelectedCollections(selectItems)
+      if (applyProducts[0] === "collections") {
+        setSelectedCollections(selectItems);
       }
       if (applyProducts[0] === "specific" || applyProducts[0] === "tags") {
         setSelectedProds(selectItems);
       }
 
-      // store.set("items", 
-      //   store.get('items') 
+      // store.set("items",
+      //   store.get('items')
       //     ? [...store.get('items'), ...selectItems]
       //     : [...selectItems]
       // );
 
-      store.set("items", [...selectItems])
+      store.set("items", [...selectItems]);
+      setIsSave(true);
+
       // setIsSelectionChanged(true);
     },
     // [applyProducts, setIsSelectionChanged]
-    [applyProducts]
+    [applyProducts, setIsSave]
   );
 
   const removeItem = useCallback(
     (id) => {
-      if (selectedProds.length > 0) {
-        let items = applyProducts[0] === "collections"
-          ? selectedCollections.filter((item) => {
-            return item.id != id;
-          })
-          : selectedProds.filter((item) => {
-            return item.id != id;
-          })
-        console.log(items);
+      if (selectedProds.length > 0 || selectedCollections.length > 0) {
+        let items =
+          applyProducts[0] === "collections"
+            ? selectedCollections.filter((item) => {
+                return item.id != id;
+              })
+            : selectedProds.filter((item) => {
+                return item.id != id;
+              });
 
-        console.log(applyProducts[0]);
-        if (applyProducts[0] === "collections"){
-          setSelectedCollections(items)
+        if (applyProducts[0] === "collections") {
+          setSelectedCollections(items);
         }
         if (applyProducts[0] === "specific" || applyProducts[0] === "tags") {
           setSelectedProds(items);
         }
         // store.remove("items");
-        store.set("items", 
-          store.get('items')
-            ? store.get('items')
-              .filter((value)=>{
-                return value.id != id
+        store.set(
+          "items",
+          store.get("items")
+            ? store.get("items").filter((value) => {
+                return value.id != id;
               })
             : [...items]
         );
+        setIsSave(true);
       }
     },
-    [selectedProds, applyProducts, selectedCollections]
+    [selectedProds, applyProducts, selectedCollections, setIsSave]
   );
 
   useEffect(() => {
     // debugger
-    setIsSave(false)
+    // setIsSave(false)
     if (isChoiceSelected) {
       if (applyProducts[0] === "specific") {
         setResourceType("Product");
@@ -149,9 +141,8 @@ const ApplyProducts = ({
     // resrcPickerState,
     showRsrcPckrForTags,
     isChoiceSelected,
-    setIsSave
+    setIsSave,
   ]);
-  // console.log(notify, showRsrcPckrForTags);
 
   return (
     <Form>
@@ -169,6 +160,8 @@ const ApplyProducts = ({
           onChange={(selected) => {
             setIsChoiceSelected(true);
             setApplyProducts(selected);
+            setIsSave(false);
+
             // setSelectedProds([]);
           }}
         />
@@ -178,23 +171,29 @@ const ApplyProducts = ({
             resourceType={resourceType}
             selectMultiple={8}
             showVariants={false}
-            initialSelectionIds={resourceType === 'Product' ? selectedProds : selectedCollections}
+            initialSelectionIds={
+              resourceType === "Product" ? selectedProds : selectedCollections
+            }
             onCancel={() => {
               setResrcPickerState(false);
               setNotify(false);
               setShowRsrcPckrForTags(false);
+              setIsSave(false);
             }}
             onSelection={(selectPayload) => {
+              setIsSave(false);
               handleProdsSelected(selectPayload);
               setNotify(false);
               setShowRsrcPckrForTags(false);
             }}
           />
         )}
-        {resourceType !== "all" && selectedProds?.length > 0 && (
+        {applyProducts[0] !== "all" && selectedProds?.length > 0 && (
           <ResourceList
             resourceName={{ singular: "item", plural: "items" }}
-            items={resourceType === 'Product' ? selectedProds : selectedCollections}
+            items={
+              resourceType === "Product" ? selectedProds : selectedCollections
+            }
             renderItem={(item) => {
               const { id, title, image } = item;
               const media = (
@@ -223,6 +222,7 @@ const ApplyProducts = ({
                     onClick={() => {
                       window.event.preventDefault();
                       window.event.stopPropagation();
+                      setIsSave(false);
                       removeItem(id);
                     }}
                   >
@@ -238,18 +238,20 @@ const ApplyProducts = ({
             content={
               "Notice: Insert products tags into search input to find products with that tag"
             }
-            duration={10000}
+            duration={50000}
             action={{
               content: "Show Resource Picker",
               onAction: () => {
                 setShowRsrcPckrForTags(true);
                 setIsChoiceSelected(true);
+                setIsSave(false);
               },
             }}
             onDismiss={() => {
               setNotify(false);
               setShowRsrcPckrForTags(false);
               setIsChoiceSelected(false);
+              setIsSave(false);
             }}
           />
         )}

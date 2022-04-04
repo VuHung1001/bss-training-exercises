@@ -8,18 +8,17 @@ import {
 } from "@shopify/polaris";
 import { useState, useCallback, useEffect } from "react";
 
-const GeneralInfor = ({ 
-  isSave, 
-  isGeneralApproved,
+const GeneralInfor = ({
+  isSave,
+  // isGeneralApproved,
   setIsSave,
-  setIsGeneralApproved 
+  setIsGeneralApproved,
 }) => {
   const [name, setName] = useState("");
   const [priority, setPriority] = useState(0);
   const [status, setStatus] = useState(true);
   const [nameMess, setNameMess] = useState("");
   const [priorityMess, setPriorityMess] = useState("");
-  // console.log(isSave, isGeneralApproved);
 
   // const toggleActive = useCallback(() => setActive((active) => !active), []);
 
@@ -41,7 +40,6 @@ const GeneralInfor = ({
       setNameMess("");
       approved = true;
     }
-    console.log(approved);
     setIsGeneralApproved(approved);
     setIsSave(approved);
   }, [name, priority, setIsGeneralApproved, setIsSave]);
@@ -85,7 +83,10 @@ const GeneralInfor = ({
         </Caption>
         <Select
           label="Status"
-          options={[{label: "Enable", value: true}, {label: "Disable", value: false}]}
+          options={[
+            { label: "Enable", value: true },
+            { label: "Disable", value: false },
+          ]}
           onChange={(selected) => setStatus(selected)}
           value={status}
         />

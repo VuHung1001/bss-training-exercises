@@ -12,31 +12,29 @@ import ApplyProducts from "./components/ApplyProducts";
 import CustomPrices from "./components/CustomPrices";
 import TablePrices from "./components/TablePrices";
 import { useEffect, useState } from "react";
-import store from 'store-js'
+import store from "store-js";
 
 export default function Index() {
   const [isAllProds, setIsAllProds] = useState(true);
-  const [isFirstLoad, setIsFirstLoad ] = useState(true)
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
   // const [isSelectionChanged, setIsSelectionChanged] = useState(false);
   const [isSave, setIsSave] = useState(false);
   const [isSaveSuccess, setIsSaveSuccess] = useState(false);
   const [isGeneralApproved, setIsGeneralApproved] = useState(false);
   const [isCustomApproved, setIsCustomApproved] = useState(false);
-  // console.log(isSelectionChanged);
-  console.log(isSave, isSaveSuccess);
 
-  useEffect(()=>{
-    if(isFirstLoad){
-      store.remove('items')
-      store.remove('modPrice')
-      setIsFirstLoad(false)
+  useEffect(() => {
+    if (isFirstLoad) {
+      store.remove("items");
+      store.remove("modPrice");
+      setIsFirstLoad(false);
     }
-    if(isGeneralApproved && isCustomApproved){
-      setIsSaveSuccess(true)
+    if (isGeneralApproved && isCustomApproved) {
+      setIsSaveSuccess(true);
     } else {
-      setIsSaveSuccess(false)
+      setIsSaveSuccess(false);
     }
-  }, [isFirstLoad, isGeneralApproved, isCustomApproved])
+  }, [isFirstLoad, isGeneralApproved, isCustomApproved]);
 
   return (
     <div className="container">
@@ -51,7 +49,7 @@ export default function Index() {
 
                 <GeneralInfor
                   isSave={isSave}
-                  isGeneralApproved={isGeneralApproved}
+                  // isGeneralApproved={isGeneralApproved}
                   setIsSave={setIsSave}
                   setIsGeneralApproved={setIsGeneralApproved}
                 />
@@ -74,7 +72,7 @@ export default function Index() {
 
                 <CustomPrices
                   isSave={isSave}
-                  isCustomApproved={isCustomApproved}
+                  // isCustomApproved={isCustomApproved}
                   setIsSave={setIsSave}
                   setIsCustomApproved={setIsCustomApproved}
                 />
@@ -83,13 +81,15 @@ export default function Index() {
           </Layout>
           {/* {isSelectionChanged && ( */}
           <ContextualSaveBar
-            message="Unsaved changes"
+            message="Submit"
             saveAction={{
+              content: "View Result",
               onAction: () => setIsSave(true),
               // loading: false,
               // disabled: false,
             }}
             discardAction={{
+              content: "Toggle or Reload Result",
               onAction: () => setIsSave(false),
             }}
           />
