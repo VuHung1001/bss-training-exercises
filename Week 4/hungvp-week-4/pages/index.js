@@ -12,13 +12,31 @@ import ApplyProducts from "./components/ApplyProducts";
 import CustomPrices from "./components/CustomPrices";
 import TablePrices from "./components/TablePrices";
 import { useEffect, useState } from "react";
+import store from 'store-js'
 
 export default function Index() {
   const [isAllProds, setIsAllProds] = useState(true);
-  const [isSelectionChanged, setIsSelectionChanged] = useState(false);
+  const [isFirstLoad, setIsFirstLoad ] = useState(true)
+  // const [isSelectionChanged, setIsSelectionChanged] = useState(false);
   const [isSave, setIsSave] = useState(false);
   const [isSaveSuccess, setIsSaveSuccess] = useState(false);
-  console.log(isSelectionChanged);
+  const [isGeneralApproved, setIsGeneralApproved] = useState(false);
+  const [isCustomApproved, setIsCustomApproved] = useState(false);
+  // console.log(isSelectionChanged);
+  console.log(isSave, isSaveSuccess);
+
+  useEffect(()=>{
+    if(isFirstLoad){
+      store.remove('items')
+      store.remove('modPrice')
+      setIsFirstLoad(false)
+    }
+    if(isGeneralApproved && isCustomApproved){
+      setIsSaveSuccess(true)
+    } else {
+      setIsSaveSuccess(false)
+    }
+  }, [isFirstLoad, isGeneralApproved, isCustomApproved])
 
   return (
     <div className="container">
@@ -33,7 +51,9 @@ export default function Index() {
 
                 <GeneralInfor
                   isSave={isSave}
-                  setIsSaveSuccess={setIsSaveSuccess}
+                  isGeneralApproved={isGeneralApproved}
+                  setIsSave={setIsSave}
+                  setIsGeneralApproved={setIsGeneralApproved}
                 />
               </Card>
             </Layout.Section>
@@ -43,7 +63,8 @@ export default function Index() {
 
                 <ApplyProducts
                   setIsAllProds={setIsAllProds}
-                  setIsSelectionChanged={setIsSelectionChanged}
+                  setIsSave={setIsSave}
+                  // setIsSelectionChanged={setIsSelectionChanged}
                 />
               </Card>
             </Layout.Section>
@@ -53,8 +74,9 @@ export default function Index() {
 
                 <CustomPrices
                   isSave={isSave}
-                  setIsSaveSuccess={setIsSaveSuccess}
+                  isCustomApproved={isCustomApproved}
                   setIsSave={setIsSave}
+                  setIsCustomApproved={setIsCustomApproved}
                 />
               </Card>
             </Layout.Section>
@@ -75,13 +97,15 @@ export default function Index() {
         </Page>
       </Frame>
 
-      <TablePrices
-        isAllProds={isAllProds}
-        isSaveSuccess={isSaveSuccess}
-        isSave={isSave}
-        isSelectionChanged={isSelectionChanged}
-        setIsSelectionChanged={setIsSelectionChanged}
-      />
+      {isSaveSuccess && isSave && (
+        <TablePrices
+          isAllProds={isAllProds}
+          isSaveSuccess={isSaveSuccess}
+          isSave={isSave}
+          // isSelectionChanged={isSelectionChanged}
+          // setIsSelectionChanged={setIsSelectionChanged}
+        />
+      )}
     </div>
   );
 }

@@ -24,13 +24,17 @@ const GET_PRODUCTS_BY_ID = gql`
 
 const GET_ALL_PRODUCTS = gql`
   query getProducts {
-    products {
-      title
-      id
-      variants(first: 1) {
-        edges {
-          node {
-            price
+    products (first: 8){
+      edges{
+        node{
+          title
+          id
+          variants(first: 1) {
+            edges {
+              node {
+                price
+              }
+            }
           }
         }
       }
@@ -44,11 +48,18 @@ const GET_PRODUCTS_BY_COLLECTION = gql`
       ... on Collection {
         title
         id
-        products(first: 3) {
+        products(first: 4) {
           edges {
             node {
               id
               title
+              variants(first: 1) {
+                edges {
+                  node {
+                    price
+                  }
+                }
+              }
             }
           }
         }
@@ -59,15 +70,21 @@ const GET_PRODUCTS_BY_COLLECTION = gql`
 
 const TablePrices = ({
   isAllProds,
-  isSelectionChanged,
-  setIsSelectionChanged,
+  // isSelectionChanged,
+  // setIsSelectionChanged,
   isSave,
   isSaveSuccess,
 }) => {
   const [itemsIds, setItemsIds] = useState([]);
+  // const [collectionsIds, setCollectionsIds] = useState([]);
   const [itemType, setItemType] = useState("Product");
   const [itemsCollections, setItemsCollections] = useState([]);
-  const { loading, error, data, refetch } = useQuery(
+  let formatter = new Intl.NumberFormat("vn", {
+    style: "currency",
+    currency: "VND",
+  });
+
+  const { loading, error, data, refetch  } = useQuery(
     isAllProds
       ? GET_ALL_PRODUCTS
       : itemType === "Collection"
@@ -78,21 +95,47 @@ const TablePrices = ({
           variables: { ids: itemsIds },
         }
       : {}
-  );
+  )
+  
   console.log(data);
+  console.log(store.get('modPrice'));
+  console.log(isSave, isSaveSuccess)
+  console.log(isAllProds);
 
   useEffect(() => {
-    if (isSelectionChanged && isSave) {
-      setItemsIds(store.get("items").map((value) => value.id));
+    // debugger
+    // if (isSelectionChanged && isSave) {
+    if (isSave && isSaveSuccess) {
+      if(!isAllProds){
+        // store.get("items").map((value, index) => {
+        //   if(value.id.includes('Collection')){
+        //     setCollectionsIds(
+        //       (prev) => {
+        //         return [...prev, value.id]
+        //       }
+        //     )
+        //   }
+        //   else {
+        //     setItemsIds(
+        //       (prev) => {
+        //         return [...prev, value.id]
+        //       }
+        //     )
+        //   }
+        // })
+
+        setItemsIds(store.get("items").map((value) => value.id));
+      }  
+
       // console.log(store.get('items'));
-      console.log(isAllProds);
-      isSaveSuccess && setIsSelectionChanged(false);
+      
+      // isSaveSuccess && setIsSelectionChanged(false);
       if (isAllProds) {
         setItemType("Product");
       }
-      if (store.get("items")) {
-        console.log(store?.get("items")[0]?.id?.includes("Product"));
-        console.log(store?.get("items")[0]?.id?.includes("Collection"));
+      if (store.get("items") && !isAllProds) {
+        // console.log(store?.get("items")[0]?.id?.includes("Product"));
+        // console.log(store?.get("items")[0]?.id?.includes("Collection"));
         if (store?.get("items")[0]?.id?.includes("Product")) {
           setItemType("Product");
         }
@@ -113,8 +156,8 @@ const TablePrices = ({
     }
   }, [
     isAllProds,
-    isSelectionChanged,
-    setIsSelectionChanged,
+    // isSelectionChanged,
+    // setIsSelectionChanged,
     isSave,
     isSaveSuccess,
     data,
@@ -128,7 +171,7 @@ const TablePrices = ({
   //     <Banner status="critical">There was an issue loading products.</Banner>
   //   );
   // }
-  console.log(data?.nodes[0]?.products?.edges[0]?.node?.title);
+  // console.log(data?.nodes[0]?.products?.edges[0]?.node?.title);
 
   return (
     <div className="table-container">
@@ -139,23 +182,38 @@ const TablePrices = ({
         <thead>
           <tr>
             <td>Title</td>
-            <td>Modified Price</td>
+            <td>Discount amount</td>
+            <td>Final Price</td>
           </tr>
         </thead>
         <tbody>
-          {itemType === "Product" && data?.nodes
-            ? data?.nodes?.map((value, index) => (
-                <tr key={index}>
-                  <td>{value.title}</td>
-                  <td>{store.get("modPrice")}</td>
-                </tr>
-              ))
-            : itemsCollections?.map((value, index) => (
-                <tr key={index}>
-                  <td>{value}</td>
-                  <td>{store.get("modPrice")}</td>
-                </tr>
-              ))}
+          {data?.nodes && isSave && isSaveSuccess
+            && data?.nodes?.map((value, index) => (
+              <tr key={index}>
+                <td>{value.title}</td>
+                <td>{store.get("modPrice")}</td>
+                <td>{
+                  store.get("modPrice").type === 'amount' && store.get("modPrice").amount
+                }</td>
+              </tr>
+          ))}
+
+          {itemsCollections.length >0 && isSave && isSaveSuccess
+            && itemsCollections?.map((value, index) => (
+              <tr key={index}>
+                <td>{value}</td>
+                <td>{store.get("modPrice")}</td>
+              </tr>
+          ))}
+
+          {data?.products && isAllProds 
+            && isSave && isSaveSuccess
+            && data?.products?.edges?.map((value, index) => (
+              <tr key={index}>
+                <td>{value?.node?.title}</td>
+                <td>{store.get("modPrice")}</td>
+              </tr>
+          ))}
         </tbody>
       </table>
     </div>

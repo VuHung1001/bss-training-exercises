@@ -12,11 +12,16 @@ import {
 import { ResourcePicker } from "@shopify/app-bridge-react";
 import store from "store-js";
 
-const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
+const ApplyProducts = ({ 
+  setIsAllProds, 
+  setIsSave
+  // setIsSelectionChanged 
+}) => {
   const [applyProducts, setApplyProducts] = useState(["all"]);
   const [resrcPickerState, setResrcPickerState] = useState(false);
   const [resourceType, setResourceType] = useState("Product");
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedProds, setSelectedProds] = useState([]);
+  const [selectedCollections, setSelectedCollections] = useState([]);
   const [notify, setNotify] = useState(false);
   const [showRsrcPckrForTags, setShowRsrcPckrForTags] = useState(false);
   const [isChoiceSelected, setIsChoiceSelected] = useState(false);
@@ -24,12 +29,13 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
   // console.log(applyProducts[0]);
   // console.log(resrcPickerState);
   // console.log(resourceType);
-  // console.log(selectedItems);
+  // console.log(selectedProds);
   // console.log(notify);
   // console.log(showRsrcPckrForTags);
 
   const handleProdsSelected = useCallback(
     (selectPayload) => {
+      // debugger
       // console.log(applyProducts[0]);
       const selectItems = selectPayload.selection.map((item) => {
         // console.log(item);
@@ -51,30 +57,62 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
       setResrcPickerState(false);
       // console.log(selectItems);
 
-      setSelectedItems(selectItems);
-      store.set("items", [...selectItems]);
-      setIsSelectionChanged(true);
+      if (applyProducts[0] === "collections"){
+        setSelectedCollections(selectItems)
+      }
+      if (applyProducts[0] === "specific" || applyProducts[0] === "tags") {
+        setSelectedProds(selectItems);
+      }
+
+      // store.set("items", 
+      //   store.get('items') 
+      //     ? [...store.get('items'), ...selectItems]
+      //     : [...selectItems]
+      // );
+
+      store.set("items", [...selectItems])
+      // setIsSelectionChanged(true);
     },
-    [applyProducts, setIsSelectionChanged]
+    // [applyProducts, setIsSelectionChanged]
+    [applyProducts]
   );
 
   const removeItem = useCallback(
     (id) => {
-      if (selectedItems.length > 0) {
-        let items = selectedItems.filter((item) => {
-          return item.id != id;
-        });
-        // console.log(items);
+      if (selectedProds.length > 0) {
+        let items = applyProducts[0] === "collections"
+          ? selectedCollections.filter((item) => {
+            return item.id != id;
+          })
+          : selectedProds.filter((item) => {
+            return item.id != id;
+          })
+        console.log(items);
 
-        setSelectedItems(items);
-        store.remove("items");
-        store.set("items", items);
+        console.log(applyProducts[0]);
+        if (applyProducts[0] === "collections"){
+          setSelectedCollections(items)
+        }
+        if (applyProducts[0] === "specific" || applyProducts[0] === "tags") {
+          setSelectedProds(items);
+        }
+        // store.remove("items");
+        store.set("items", 
+          store.get('items')
+            ? store.get('items')
+              .filter((value)=>{
+                return value.id != id
+              })
+            : [...items]
+        );
       }
     },
-    [selectedItems]
+    [selectedProds, applyProducts, selectedCollections]
   );
 
   useEffect(() => {
+    // debugger
+    setIsSave(false)
     if (isChoiceSelected) {
       if (applyProducts[0] === "specific") {
         setResourceType("Product");
@@ -101,16 +139,17 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
         setResrcPickerState(false);
         setIsAllProds(true);
       }
-      store.remove("items");
+      // store.remove("items");
       setIsChoiceSelected(false);
     }
   }, [
     applyProducts,
     setIsAllProds,
-    resourceType,
-    resrcPickerState,
+    // resourceType,
+    // resrcPickerState,
     showRsrcPckrForTags,
     isChoiceSelected,
+    setIsSave
   ]);
   // console.log(notify, showRsrcPckrForTags);
 
@@ -130,14 +169,16 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
           onChange={(selected) => {
             setIsChoiceSelected(true);
             setApplyProducts(selected);
+            // setSelectedProds([]);
           }}
         />
         {applyProducts[0] != "all" && resrcPickerState && (
           <ResourcePicker
             open={resrcPickerState}
             resourceType={resourceType}
-            selectMultiple={10}
+            selectMultiple={8}
             showVariants={false}
+            initialSelectionIds={resourceType === 'Product' ? selectedProds : selectedCollections}
             onCancel={() => {
               setResrcPickerState(false);
               setNotify(false);
@@ -150,10 +191,10 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
             }}
           />
         )}
-        {resourceType !== "all" && selectedItems?.length > 0 && (
+        {resourceType !== "all" && selectedProds?.length > 0 && (
           <ResourceList
             resourceName={{ singular: "item", plural: "items" }}
-            items={selectedItems}
+            items={resourceType === 'Product' ? selectedProds : selectedCollections}
             renderItem={(item) => {
               const { id, title, image } = item;
               const media = (
@@ -195,7 +236,7 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
         {applyProducts[0] == "tags" && notify && (
           <Toast
             content={
-              "Notice: Insert products tags into search input to find products have that tag"
+              "Notice: Insert products tags into search input to find products with that tag"
             }
             duration={10000}
             action={{
@@ -208,6 +249,7 @@ const ApplyProducts = ({ setIsAllProds, setIsSelectionChanged }) => {
             onDismiss={() => {
               setNotify(false);
               setShowRsrcPckrForTags(false);
+              setIsChoiceSelected(false);
             }}
           />
         )}

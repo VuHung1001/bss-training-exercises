@@ -46,6 +46,7 @@
 
 .table-price {
   border: 3px solid #f6f6f7;
+  margin-bottom: 100px;
 }
 
 .table-price thead tr {
@@ -54,7 +55,7 @@
 }
 
 .table-price td {
-  padding: 10px;
+  padding: 10px 20px;
   text-align: center;
   background-color: transparent;
 }

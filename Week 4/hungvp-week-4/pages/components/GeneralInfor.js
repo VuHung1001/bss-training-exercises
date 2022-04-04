@@ -8,36 +8,50 @@ import {
 } from "@shopify/polaris";
 import { useState, useCallback, useEffect } from "react";
 
-const GeneralInfor = ({ isSave, setIsSaveSuccess }) => {
+const GeneralInfor = ({ 
+  isSave, 
+  isGeneralApproved,
+  setIsSave,
+  setIsGeneralApproved 
+}) => {
   const [name, setName] = useState("");
   const [priority, setPriority] = useState(0);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(true);
   const [nameMess, setNameMess] = useState("");
   const [priorityMess, setPriorityMess] = useState("");
+  // console.log(isSave, isGeneralApproved);
 
   // const toggleActive = useCallback(() => setActive((active) => !active), []);
 
   const checkValidation = useCallback(() => {
+    // debugger
+    let approved = false;
     if (priority < 0 || priority > 99 || Math.floor(priority) != priority) {
       setPriorityMess("Priority must be natural number between 0 and 99");
-      setIsSaveSuccess(false);
+      approved = false;
     } else {
       setPriorityMess("");
-      setIsSaveSuccess(true);
+      approved = true;
     }
 
     if (name === "") {
       setNameMess("Name of Price Rule must be inputted");
-      setIsSaveSuccess(false);
+      approved = false;
     } else {
       setNameMess("");
-      setIsSaveSuccess(true);
+      approved = true;
     }
-  }, [name, priority, setIsSaveSuccess]);
+    console.log(approved);
+    setIsGeneralApproved(approved);
+    setIsSave(approved);
+  }, [name, priority, setIsGeneralApproved, setIsSave]);
+  // }, [name, priority]);
 
   useEffect(() => {
+    // debugger
     isSave && checkValidation();
   }, [checkValidation, isSave]);
+  // }, []);
 
   return (
     <Form>
@@ -71,7 +85,7 @@ const GeneralInfor = ({ isSave, setIsSaveSuccess }) => {
         </Caption>
         <Select
           label="Status"
-          options={["Enable", "Disable"]}
+          options={[{label: "Enable", value: true}, {label: "Disable", value: false}]}
           onChange={(selected) => setStatus(selected)}
           value={status}
         />

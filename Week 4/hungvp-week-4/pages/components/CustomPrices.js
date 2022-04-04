@@ -9,54 +9,70 @@ import {
 } from "@shopify/polaris";
 import store from "store-js";
 
-const CustomPrices = ({ isSave, setIsSaveSuccess, setIsSave }) => {
+const CustomPrices = ({ 
+  isSave, 
+  isCustomApproved,
+  setIsSave ,
+  setIsCustomApproved, 
+}) => {
   const [customPricesType, setCustomPricesType] = useState(["apply"]);
   const [amount, setAmount] = useState(0);
   const [amountMess, setAmountMess] = useState("");
   const [isValid, setIsValid] = useState(false);
+  const [isChoiceChanged, setIsChoiceChanged] = useState(false);
   // const [modifiedPriceArr, setModifiedPriceArr] = useState([])
   // console.log(modifiedPriceArr);
-  console.log(isValid);
+  // console.log(isValid);
+  // console.log(isSave, isCustomApproved);
+  // console.log(isValid);
+
 
   const checkValidation = useCallback(() => {
+    // debugger
+    let approved = false;
     if (customPricesType[0] === "decrease percentage") {
-      if (amount < 1 || amount > 99 || Math.floor(amount) != amount) {
-        setAmountMess("Percentage must be natural number between 1 and 99");
+      if (amount < 0 || amount > 100) {
+        setAmountMess("Percentage must be between 0 and 100");
         setIsValid(false);
-        setIsSaveSuccess(false);
+        approved = false;
       } else {
         setAmountMess("");
         setIsValid(true);
-        setIsSaveSuccess(true);
+        approved = true;
       }
     }
     if (customPricesType[0] === "apply") {
-      if (amount <= 0 || Math.floor(amount) != amount) {
-        setAmountMess("Amount price must be natural number larger than 0");
+      if (amount < 0) {
+        setAmountMess("Amount price must be larger or equal than 0");
         setIsValid(false);
-        setIsSaveSuccess(false);
+        approved = false;
       } else {
         setAmountMess("");
         setIsValid(true);
-        setIsSaveSuccess(true);
+        approved = true;
       }
     }
     if (customPricesType[0] === "decrease amount") {
-      if (amount % 5 > 0 || amount <= 0 || Math.floor(amount) != amount) {
+      if (amount % 5 > 0 || amount < 0) {
         setAmountMess(
-          "Fixed decreased amount price must be natural number divisible by 5 and larger than 0"
+          "Fixed decreased amount price must be divisible by 5 and larger or equal than 0"
         );
         setIsValid(false);
-        setIsSaveSuccess(false);
+        approved = false;
       } else {
         setAmountMess("");
         setIsValid(true);
-        setIsSaveSuccess(true);
+        approved = true;
       }
     }
-  }, [customPricesType, amount, setIsSaveSuccess]);
+    // console.log(approved);
+    setIsCustomApproved(approved);
+    setIsSave(approved);    
+  }, [customPricesType, amount, setIsCustomApproved, setIsSave]);
+  // }, [customPricesType, amount]);
 
   const handleModPrice = useCallback(() => {
+    // debugger
     let formatter = new Intl.NumberFormat("vn", {
       style: "currency",
       currency: "VND",
@@ -64,14 +80,15 @@ const CustomPrices = ({ isSave, setIsSaveSuccess, setIsSave }) => {
 
     // setModifiedPriceArr(prev => {
     if (customPricesType[0] === "apply")
-      store.set("modPrice", formatter.format(amount));
+      store.set("modPrice", {text: formatter.format(amount), type: 'amount', amount});
 
     if (customPricesType[0] === "decrease amount")
-      store.set("modPrice", "all variant prices -" + formatter.format(amount));
+      store.set("modPrice", {text: "all variant prices -" + formatter.format(amount), type: 'decrease amount', amount});
 
     if (customPricesType[0] === "decrease percentage")
-      store.set("modPrice", "all variant prices -" + amount + "%");
+      store.set("modPrice", {text: "all variant prices -" + amount + "%", type: 'decrease percent', amount});
 
+    // console.log(store.get('modePrice'));
     // })
   }, [customPricesType, amount]);
 
@@ -79,10 +96,13 @@ const CustomPrices = ({ isSave, setIsSaveSuccess, setIsSave }) => {
     // if (amount != 0) {
     //   checkValidation();
     // }
-
-    isSave && checkValidation();
+    // debugger
+    (isSave || isChoiceChanged) && checkValidation() && setIsChoiceChanged(false);
     isSave && isValid && handleModPrice();
-  }, [handleModPrice, isSave, isValid, checkValidation]);
+    console.log(isSave, isValid)
+    // isValid && handleModPrice();
+  // }, [handleModPrice, isSave, isValid, checkValidation]);
+  }, [checkValidation, isValid, handleModPrice, isSave, customPricesType, isChoiceChanged]);
 
   return (
     <Form>
@@ -107,7 +127,10 @@ const CustomPrices = ({ isSave, setIsSaveSuccess, setIsSave }) => {
           ]}
           selected={customPricesType}
           onChange={(selected) => {
+            setIsSave(false);
             setCustomPricesType(selected);
+            setIsChoiceChanged(true)
+            // checkValidation()
           }}
           // onBlur={checkValidation}
         />
@@ -127,7 +150,7 @@ const CustomPrices = ({ isSave, setIsSaveSuccess, setIsSave }) => {
           defaultValue={0}
           placeholder="0"
           value={amount}
-          onChange={(value) => setAmount(value)}
+          onChange={(value) => {setIsSave(false); setAmount(value)}}
           onBlur={checkValidation}
           id="amount"
         />
